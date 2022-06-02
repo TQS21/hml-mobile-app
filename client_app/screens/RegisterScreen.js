@@ -1,202 +1,98 @@
-import React, { Component } from 'react';
-import { Button, Keyboard, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import React, { useState } from 'react'
+import { TouchableOpacity, StyleSheet, View } from 'react-native'
+import { Text } from 'react-native-paper'
+import Background from '../components/Background'
+import Header from '../components/Header'
+import Button from '../components/Button'
+import TextInput from '../components/TextInput'
+import BackButton from '../components/BackButton'
+import { theme } from '../core/theme'
+import { emailValidator } from '../helpers/emailValidator'
+import { passwordValidator } from '../helpers/passwordValidator'
+import SimpleLottie from '../components/SimpleLottie'
 
-export default class RegisterScreen extends Component {
+export default class RegisterScreen({navigation}) {
 
-  emailInputRef = React.createRef();
-  passwordInputRef = React.createRef();
-  firstnameInputRef = React.createRef();
-  lastnameInputRef = React.createRef();
-  //occupationInputRef = React.createRef();
-  //addressInputRef = React.createRef();
-  //zipInputRef = React.createRef();
-  //phoneInputRef = React.createRef();
-  //scrollViewRef = React.createRef();
+  const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
+  const [password, setPassword] = useState('')
 
-  constructor(props) {
-    super(props);
-    this.state = {
-        email: '',
-        password: '',
-        firstname: '',
-        lastname: '',
-        showEmailError: false,
-        showPasswordError: false,
-        showFirstnameError: false,
-        showLastnameError: false,
-    };
-    this.submitPressed = this.submitPressed.bind(this);
-  }
+  const onRegistPressed = () => {
 
-  inputs = () => {
-    return [
-      this.emailInputRef,
-      this.passwordInputRef,
-      this.firstnameInputRef,
-      this.lastnameInputRef,
-    ];
-  };
-
-  editNextInput = () => {
-    console.log("editNextInput")
-    const activeIndex = this.getActiveInputIndex();
-    if (activeIndex === -1) {
-        return;
+    const emailError = emailValidator(email.value)
+    const passwordError = passwordValidator(password.value)
+    const nameError = nameValidator(name.value)
+    if (emailError || passwordError || nameError) {
+      setEmail({ ...email, error: emailError })
+      setPassword({ ...password, error: passwordError })
+      setName({ ...name, error: nameError })
+      return
     }
 
-    const nextIndex = activeIndex + 1;
-    if (nextIndex < this.inputs().length && this.inputs()[nextIndex].current != null) {
-        this.setFocus(this.inputs()[nextIndex], true);
-    } else {
-        this.finishEditing();
-    }
+    let formData = new FormData();
+    formData.append("name", name.value);
+    formData.append("password", password.value );
+    formData.append("email", email.value);
+    //let resp = fetch('http://192.168.1.69:8393/user/2', {
+    let resp = fetch('http://....../user/2', {
+      method: 'PUT',
+      body: formData
+    }).then((response)=>{
+        if (response.ok) {
+          navigation.navigate("StartScreen")
+        } else  throw new Error(response.status)
+        
+      })
+
+    return
   }
 
-  onInputFocus = () => {
-    this.setState({
-        activeIndex: this.getActiveInputIndex(),
-    });
-  }
-
-  onChangeInputHandler = (name, value) => {
-    this.setState({
-        [name]: value,
-    });
-  }
-
-  getActiveInputIndex = () => {
-    const activeIndex = this.inputs().findIndex((input) => {
-        if (input.current == null) {
-            return false;
-        }
-        console.log("input: ", input);
-        return input.current.isFocused();
-    });
-    console.log("activeIndex: ", activeIndex);
-    return activeIndex;
-  }
-
-  finishEditing = () => {
-    const activeIndex = this.getActiveInputIndex();
-    if (activeIndex === -1) {
-        return;
-    }
-    this.setFocus(this.inputs()[activeIndex], false);
-  }
-
-  setFocus(textInputRef, shouldFocus) {
-    if (shouldFocus) {
-        setTimeout(() => {
-            textInputRef.current.focus();
-        }, 100);
-    } else {
-        textInputRef.current.blur();
-    }
-  }
-
-  submitPressed() {
-    console.log("submitPressed this.state: ", this.state);
-    this.setState({
-        showEmailError: this.state.email.length < 4,
-        showPasswordError: this.state.password.length < 4,
-        showFirstnameError: this.state.firstname.length < 4,
-        showLastnameError: this.state.lastname.length < 4,
-    });
-    Keyboard.dismiss();
-  }
-
-  render() {
     return (
-        <KeyboardAwareScrollView
-          style={styles.container}
-          contentOffset={{ x: 0, y: 24 }}
-          ref={this._scrollViewRef}
-          scrollEventThrottle={16}
-          contentContainerStyle={{ paddingTop: 24 }}
-          contentInsetAdjustmentBehavior="always"
-          keyboardShouldPersistTaps="handled"
-          keyboardDismissMode="on-drag"
-          enableOnAndroid={true}
-          extraHeight={32}
-          extraScrollHeight={Platform.OS == "android" ? 32 : 0}
-          enableResetScrollToCoords={false}
-          onKeyboardDidShow={this._keyboardDidShowHandler}
-        >
-            <View style={styles.container}>
+      <Background>
+      <BackButton goBack={navigation.goBack} />
+      <Header>Register</Header>
 
-                <Text style={styles.header}>Register</Text>
-
-                <View style={styles.inputTextWrapper}>
-                    <TextInput
-                        placeholder="Email"
-                        style={styles.textInput}
-                        returnKeyType="next"
-                        onSubmitEditing={this.editNextInput}
-                        onFocus={this.onInputFocus}
-                        onChangeText={this.onChangeInputHandler}
-                        ref={this.emailInputRef}
-                    />
-                    {this.state.showEmailError &&
-                        <Text style={styles.errorText}>Please enter your email address.</Text>
-                    }
-                </View>
-
-                <View style={styles.inputTextWrapper}>
-                    <TextInput
-                        placeholder="Password"
-                        style={styles.textInput}
-                        secureTextEntry={true}
-                        returnKeyType="next"
-                        onSubmitEditing={this.editNextInput}
-                        onFocus={this.onInputFocus}
-                        onChangeText={this.onChangeInputHandler}
-                        ref={this.passwordInputRef}
-                    />
-                    {this.state.showPasswordError &&
-                        <Text style={styles.errorText}>Please enter a password.</Text>
-                    }
-                </View>
-
-                <View style={styles.inputTextWrapper}>
-                    <TextInput
-                        placeholder="First Name"
-                        style={styles.textInput}
-                        returnKeyType="next"
-                        onSubmitEditing={this.editNextInput}
-                        onFocus={this.onInputFocus}
-                        onChangeText={this.onChangeInputHandler}
-                        ref={this.firstnameInputRef}
-                    />
-                    {this.state.showFirstnameError &&
-                        <Text style={styles.errorText}>Please enter your first name.</Text>
-                    }
-                </View>
-
-                <View style={styles.inputTextWrapper}>
-                    <TextInput
-                        placeholder="Last Name"
-                        style={styles.textInput}
-                        returnKeyType="next"
-                        onSubmitEditing={this.editNextInput}
-                        onFocus={this.onInputFocus}
-                        onChangeText={this.onChangeInputHandler}
-                        ref={this.lastnameInputRef}
-                      />
-                    {this.state.showLastnameError &&
-                        <Text style={styles.errorText}>Please enter your last name.</Text>
-                    }
-                </View>
+      <TextInput
+        label="Name"
+        returnKeyType="next"
+        value={name.value}
+        onChangeText={(text) => setName({ value: text, error: '' })}
+        error={!!name.error}
+        errorText={name.error}
+        autoCapitalize="none"
+      />
+      
+      <TextInput
+        label="Email"
+        returnKeyType="next"
+        value={email.value}
+        onChangeText={(text) => setEmail({ value: text, error: '' })}
+        error={!!email.error}
+        errorText={email.error}
+        autoCapitalize="none"
+        autoCompleteType="email"
+        textContentType="emailAddress"
+        keyboardType="email-address"
+      />
+      <TextInput
+        label="Password"
+        returnKeyType="done"
+        value={password.value}
+        onChangeText={(text) => setPassword({ value: text, error: '' })}
+        error={!!password.error}
+        errorText={password.error}
+        secureTextEntry
+      />
 
 
-                <View style={styles.btnContainer}>
-                  <Button title="Submit" onPress={this.submitPressed} />
-                </View>
+      <Button mode="outlined"
+        color={'white'}
+        style={{backgroundColor: theme.colors.primary}} onPress={onRegistPressed}>
+        Login
+      </Button>
 
-            </View>
-        </KeyboardAwareScrollView>
-      );
-  }
+    </Background>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -204,12 +100,6 @@ const styles = StyleSheet.create({
       flex: 1,
       padding: 16,
       paddingBottom: 100,
-    },
-    header: {
-      fontSize: 36,
-      padding: 24,
-      margin: 12,
-      textAlign: "center",
     },
     inputTextWrapper: {
       marginBottom: 24,
