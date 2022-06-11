@@ -11,6 +11,7 @@ import Register from './components/Register';
 import ProductsBought from "./components/ProductsBought";
 
 
+
 import Context from "./Context";
 
 export default class App extends Component {
@@ -24,7 +25,7 @@ export default class App extends Component {
     this.routerRef = React.createRef();
   }
 
-  async componentDidMount() {
+    async componentDidMount() {
     let user = localStorage.getItem("user");
     let cart = localStorage.getItem("cart");
 
@@ -42,14 +43,35 @@ export default class App extends Component {
     ).catch((res) => {
       return { status: 401, message: 'Unauthorized' }
     })
+    console.log(res)
+    if(res.status === 200) {
+      const user = {
+        email:res.data.email,
+        name:res.data.name,
+        bought:[]
+      }
+      this.setState({ user });
+      localStorage.setItem("user", JSON.stringify(user));
+      return true;
+    } else {
+      return false;
+    }
+  }
 
+  register = async (name, email, password) => {
+    const res = await axios.post(
+      'http://localhost:8081/hml/api/register',
+      { name, email, password },
+    ).catch((res) => {
+      return { status: 401, message: 'Unauthorized' }
+    })
+    console.log(res.status)
     if(res.status === 202) {
       const user = {
         email:res.data.email,
         name:res.data.name,
         bought:[]
       }
-      console.log(user)
       this.setState({ user });
       localStorage.setItem("user", JSON.stringify(user));
       return true;
@@ -113,7 +135,8 @@ export default class App extends Component {
           login: this.login,
           addProduct: this.addProduct,
           clearCart: this.clearCart,
-          checkout: this.checkout
+          checkout: this.checkout,
+          register: this.register
         }}
       >
         <Router ref={this.routerRef}>
@@ -127,7 +150,7 @@ export default class App extends Component {
               <b className="navbar-item is-size-4 ">ecommerce</b>
               <label
                 role="button"
-                class="navbar-burger burger"
+                className="navbar-burger burger"
                 aria-label="menu"
                 aria-expanded="false"
                 data-target="navbarBasicExample"
@@ -183,6 +206,11 @@ export default class App extends Component {
                   </>
                 )}
               </div>
+              {this.state.user ? (
+              <div className='navbar-item ms-auto'>
+                Hello {this.state.user.name}
+              </div>
+              ) : (null)}
             </nav>
             <Switch>
               <Route exact path="/" component={ProductList} />

@@ -7,10 +7,32 @@ class Register extends Component {
     super(props);
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      repPass:"",
     };
   }
   handleChange = e => this.setState({ [e.target.name]: e.target.value, error: "" });
+
+  register = (e) => {
+    e.preventDefault();
+
+    const { username, email, password,repPass } = this.state;
+    if (!username || !password || !repPass || !email) {
+      return this.setState({ error: "Fill all fields!" });
+    }
+    if(repPass!==password){
+      return this.setState({ error: "Passwords do not match!" });
+    }
+    this.props.context.register(username, email, password)
+      .then((loggedIn) => {
+        if (!loggedIn) {
+          this.setState({ error: "Invalid Credentails!" });
+        }
+        else{
+        }
+      })
+  };
+
   render() {
     return !this.props.context.user ? (
       <>
@@ -21,15 +43,24 @@ class Register extends Component {
         </div>
         <br />
         <br />
-        <form onSubmit={this.login}>
+        <form onSubmit={this.register}>
           <div className="columns is-mobile is-centered">
             <div className="column is-one-third">
+              <div className="field">
+                <label className="label">Username: </label>
+                <input
+                  className="input"
+                  type="username"
+                  name="username"
+                  onChange={this.handleChange}
+                />
+              </div>
               <div className="field">
                 <label className="label">Email: </label>
                 <input
                   className="input"
                   type="email"
-                  name="username"
+                  name="email"
                   onChange={this.handleChange}
                 />
               </div>
@@ -46,6 +77,9 @@ class Register extends Component {
                 <label className="label">Repeat Password: </label>
                 <input
                   className="input"
+                  type="password"
+                  name="repPass"
+                  onChange={this.handleChange}
                 />
               </div>
               {this.state.error && (

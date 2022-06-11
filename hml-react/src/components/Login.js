@@ -15,7 +15,6 @@ class Login extends Component {
 
   login = (e) => {
     e.preventDefault();
-
     const { username, password } = this.state;
     if (!username || !password) {
       return this.setState({ error: "Fill all fields!" });
@@ -24,8 +23,6 @@ class Login extends Component {
       .then((loggedIn) => {
         if (!loggedIn) {
           this.setState({ error: "Invalid Credentails" });
-        }
-        else{
         }
       })
   };
