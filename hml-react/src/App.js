@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Switch, Route, Link, BrowserRouter as Router } from "react-router-dom";
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
 
 import AddProduct from './components/AddProduct';
 import Cart from './components/Cart';
@@ -9,6 +8,8 @@ import Login from './components/Login';
 import ProductList from './components/ProductList';
 import Specification from './components/Specification';
 import Register from './components/Register';
+import ProductsBought from "./components/ProductsBought";
+
 
 import Context from "./Context";
 
@@ -42,14 +43,13 @@ export default class App extends Component {
       return { status: 401, message: 'Unauthorized' }
     })
 
-    if(res.status === 200) {
-      const { email } = jwt_decode(res.data.accessToken)
+    if(res.status === 202) {
       const user = {
-        email,
-        token: res.data.accessToken,
-        accessLevel: email === 'admin@example.com' ? 0 : 1
+        email:res.data.email,
+        name:res.data.name,
+        bought:[]
       }
-
+      console.log(user)
       this.setState({ user });
       localStorage.setItem("user", JSON.stringify(user));
       return true;
@@ -100,22 +100,6 @@ export default class App extends Component {
       this.routerRef.current.history.push("/login");
       return;
     }
-
-    const cart = this.state.cart;
-
-    const products = this.state.products.map(p => {
-      if (cart[p.name]) {
-        p.stock = p.stock - cart[p.name].amount;
-
-        axios.put(
-          `http://localhost:3001/products/${p.id}`,
-          { ...p },
-        )
-      }
-      return p;
-    });
-
-    this.setState({ products });
     this.clearCart();
   };
 
@@ -178,17 +162,26 @@ export default class App extends Component {
                   </span>
                 </Link>
                 {!this.state.user ? (
+                  <>
                   <Link to="/login" className="navbar-item">
                     Login
                   </Link>
+
+                  <Link to="/register" className="navbar-item">
+                    Register
+                  </Link>
+                  </>
                 ) : (
+                  <>
+                  <Link to="/products-bought" className="navbar-item">
+                    Products Bought
+                  </Link>
+
                   <Link to="/" onClick={this.logout} className="navbar-item">
                     Logout
                   </Link>
+                  </>
                 )}
-                <Link to="/register" className="navbar-item">
-                  Register
-                </Link>
               </div>
             </nav>
             <Switch>
@@ -199,6 +192,7 @@ export default class App extends Component {
               <Route exact path="/products" component={ProductList} />
               <Route exact path="/specification" component={Specification} />
               <Route exact path="/register" component={Register} />
+              <Route exact path="/products-bought" component={ProductsBought} />
             </Switch>
           </div>
         </Router>
