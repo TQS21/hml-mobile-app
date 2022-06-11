@@ -2,38 +2,21 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import withContext from "../withContext";
 
-class Login extends Component {
-  constructor(props) {
+class Register extends Component {
+    constructor(props) {
     super(props);
     this.state = {
       username: "",
       password: ""
     };
   }
-
   handleChange = e => this.setState({ [e.target.name]: e.target.value, error: "" });
-
-  login = (e) => {
-    e.preventDefault();
-
-    const { username, password } = this.state;
-    if (!username || !password) {
-      return this.setState({ error: "Fill all fields!" });
-    }
-    this.props.context.login(username, password)
-      .then((loggedIn) => {
-        if (!loggedIn) {
-          this.setState({ error: "Invalid Credentails" });
-        }
-      })
-  };
-
   render() {
     return !this.props.context.user ? (
       <>
         <div className="hero is-primary ">
           <div className="hero-body container">
-            <h4 className="title">Login</h4>
+            <h4 className="title">Register</h4>
           </div>
         </div>
         <br />
@@ -59,6 +42,12 @@ class Login extends Component {
                   onChange={this.handleChange}
                 />
               </div>
+              <div className="field">
+                <label className="label">Repeat Password: </label>
+                <input
+                  className="input"
+                />
+              </div>
               {this.state.error && (
                 <div className="has-text-danger">{this.state.error}</div>
               )}
@@ -69,11 +58,12 @@ class Login extends Component {
                   Submit
                 </button>
               </div>
-              <a href="/register" style={{marginLeft:'25%'}}>If you are not registered, click here!</a>
-
+              
             </div>
+            
           </div>
         </form>
+        
       </>
     ) : (
       <Redirect to="/products" />
@@ -81,4 +71,4 @@ class Login extends Component {
   }
 }
 
-export default withContext(Login);
+export default withContext(Register);

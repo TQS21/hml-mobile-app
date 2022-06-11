@@ -10,18 +10,19 @@ const CartItem = props => {
         <div className="media">
           <div className="media-left">
             <figure className="image is-64x64">
+              {console.log(product)}
               <img
-                src="https://bulma.io/images/placeholders/128x128.png"
-                alt={product.shortDesc}
+                src={product.coverUrlPath}
+                alt={product.title}
               />
             </figure>
           </div>
           <div className="media-content">
             <b style={{ textTransform: "capitalize" }}>
-              {product.name}{" "}
+              {product.title}{" "}
               <span className="tag is-primary">${product.price}</span>
             </b>
-            <div>{product.shortDesc}</div>
+            <div>{product.author}</div>
             <small>{`${amount} in cart`}</small>
           </div>
           <div

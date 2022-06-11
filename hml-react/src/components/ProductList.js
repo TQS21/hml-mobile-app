@@ -1,9 +1,12 @@
 import React from "react";
 import ProductItem from "./ProductItem";
 import withContext from "../withContext";
+import {useState} from "react";
 
 const ProductList = props => {
   const { products } = props.context;
+  const [query, setQuery] = useState("")
+
 
   return (
     <>
@@ -14,22 +17,25 @@ const ProductList = props => {
       </div>
       <br />
       <div className="container">
+        <div>
+          <input style={{position:'absolute', display:'flex', width:'80%', right:'10%', border:'1px solid grey', borderRadius:5, height:40}} placeholder="Enter Book Title"  onChange={event => setQuery(event.target.value)}/>
+        </div>
         <div className="column columns is-multiline">
-          {products && products.length ? (
-            products.map((product, index) => (
+        {
+            products.filter(product => {
+              if (query === '') {
+                return product;
+              } else if (product.title.toLowerCase().startsWith(query.toLowerCase())) {
+                return product;
+              }
+            }).map((product, index) => (
               <ProductItem
                 product={product}
                 key={index}
                 addToCart={props.context.addToCart}
               />
             ))
-          ) : (
-            <div className="column">
-              <span className="title has-text-grey-light">
-                No products found!
-              </span>
-            </div>
-          )}
+        }
         </div>
       </div>
     </>

@@ -7,6 +7,8 @@ import AddProduct from './components/AddProduct';
 import Cart from './components/Cart';
 import Login from './components/Login';
 import ProductList from './components/ProductList';
+import Specification from './components/Specification';
+import Register from './components/Register';
 
 import Context from "./Context";
 
@@ -25,7 +27,7 @@ export default class App extends Component {
     let user = localStorage.getItem("user");
     let cart = localStorage.getItem("cart");
 
-    const products = await axios.get('http://localhost:3001/products');
+    const products = await axios.get('http://localhost:8081/hml/api/allBooks');
     user = user ? JSON.parse(user) : null;
     cart = cart? JSON.parse(cart) : {};
 
@@ -34,7 +36,7 @@ export default class App extends Component {
 
   login = async (email, password) => {
     const res = await axios.post(
-      'http://localhost:3001/login',
+      'http://localhost:8081/hml/api/login',
       { email, password },
     ).catch((res) => {
       return { status: 401, message: 'Unauthorized' }
@@ -70,13 +72,11 @@ export default class App extends Component {
 
   addToCart = cartItem => {
     let cart = this.state.cart;
+    console.log(cartItem)
     if (cart[cartItem.id]) {
       cart[cartItem.id].amount += cartItem.amount;
     } else {
       cart[cartItem.id] = cartItem;
-    }
-    if (cart[cartItem.id].amount > cart[cartItem.id].product.stock) {
-      cart[cartItem.id].amount = cart[cartItem.id].product.stock;
     }
     localStorage.setItem("cart", JSON.stringify(cart));
     this.setState({ cart });
@@ -186,6 +186,9 @@ export default class App extends Component {
                     Logout
                   </Link>
                 )}
+                <Link to="/register" className="navbar-item">
+                  Register
+                </Link>
               </div>
             </nav>
             <Switch>
@@ -194,6 +197,8 @@ export default class App extends Component {
               <Route exact path="/cart" component={Cart} />
               <Route exact path="/add-product" component={AddProduct} />
               <Route exact path="/products" component={ProductList} />
+              <Route exact path="/specification" component={Specification} />
+              <Route exact path="/register" component={Register} />
             </Switch>
           </div>
         </Router>
