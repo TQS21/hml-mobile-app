@@ -63,6 +63,7 @@ export default class App extends Component {
       'http://localhost:8081/hml/api/register',
       { name, email, password },
     ).catch((res) => {
+      console.log(res)
       return { status: 401, message: 'Unauthorized' }
     })
     console.log(res.status)

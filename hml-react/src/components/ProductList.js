@@ -18,7 +18,7 @@ const ProductList = props => {
       <br />
       <div className="container">
         <div>
-          <input style={{position:'absolute', display:'flex', width:'80%', right:'10%', border:'1px solid grey', borderRadius:5, height:40}} placeholder="Enter Book Title"  onChange={event => setQuery(event.target.value)}/>
+          <input name="search" style={{position:'absolute', display:'flex', width:'80%', right:'10%', border:'1px solid grey', borderRadius:5, height:40}} placeholder="Enter Book Title"  onChange={event => setQuery(event.target.value)}/>
         </div>
         <div className="column columns is-multiline">
         {
