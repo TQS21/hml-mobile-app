@@ -125,19 +125,26 @@ public class LoginSteps {
     }
 
     @And("there should be a {string} in the upper right of the screen")
-    public void email_cred() {
+    public void check_login_quit(final String name) {
 
-      assertEquals("Hello test1", driver.findElement(By.xpath("//div[@id='root']/div/nav/div[3]")).getText());
+      assertEquals(name, driver.findElement(By.xpath("//div[@id='root']/div/nav/div[3]")).getText());
       driver.quit();
+    }
+
+    @And("there should be {string} in the upper right of the screen")
+    public void check_login(final String name) {
+
+      assertEquals(name, driver.findElement(By.xpath("//div[@id='root']/div/nav/div[3]")).getText());
     }
 
 
 
 
-    @And("I click on the see Details of the product named {string}")
-    public void product_details(final String name) {
 
-      driver.findElement(By.xpath("//*[contains(text(),'"+name+"')]/../div[2]/a/button")).click();
+    @And("I click on the see Details of the first product")
+    public void product_details() {
+
+      driver.findElement(By.xpath("//div[@id='root']/div/div[2]/div[2]/div/div/div/div[2]/div[2]/a/button")).click();
     }
 
 
@@ -150,6 +157,43 @@ public class LoginSteps {
 
     }
 
+
+    @When("I click on the Add to Cart on the first product")
+    public void click_add_cart() {
+
+      driver.findElement(By.xpath("//div[@id='root']/div/div[2]/div[2]/div/div/div/div[2]/div[2]/button")).click();
+
+    }
+
+    @Then("my cart should have {int} item")
+    public void assert_num_cart(final int n_item) {
+
+		  assertEquals(""+n_item, driver.findElement(By.xpath("//div[@id='root']/div/nav/div[2]/a[2]/span")).getText());
+
+
+    }
+
+    @Then("i should have {int} item in my cart")
+    public void assert_num_cart_quit(final int n_item) {
+
+		  assertEquals(""+n_item, driver.findElement(By.xpath("//div[@id='root']/div/nav/div[2]/a[2]/span")).getText());
+      driver.quit();
+
+
+    }
+
+    @And("I click in the checkout button to order it")
+    public void click_checkout() {
+
+      driver.findElement(By.xpath("//div[@id='root']/div/div[2]/div/div[2]/div/button[2]")).click();
+    }
+
+    @When("I click on the Cart in the navbar")
+    public void go_to_cart() {
+
+      driver.findElement(By.xpath("//div[@id='root']/div/nav/div[2]/a[2]")).click();
+
+    }
 
 
 
