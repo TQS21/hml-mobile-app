@@ -9,6 +9,7 @@ import ProductList from './components/ProductList';
 import Specification from './components/Specification';
 import Register from './components/Register';
 import ProductsBought from "./components/ProductsBought";
+import CheckingOut from "./components/CheckingOut";
 
 
 
@@ -123,8 +124,35 @@ export default class App extends Component {
       this.routerRef.current.history.push("/login");
       return;
     }
-    this.clearCart();
+    else {
+      console.log(this.state.cart)
+      this.routerRef.current.history.push("/checking-out");
+      return;
+    }
   };
+
+  SendAddress = async (country, zipCode, address) => {
+    const uu = this.state.user
+    const res = await axios.post(
+      'http://localhost:8081/??????',
+      { uu, country, zipCode, address },
+    ).catch((res) => {
+      return { status: 401, message: 'Unauthorized' }
+    })
+    console.log(res.status)
+    if(res.status === 202) {
+      // const user = {
+      //   email:res.data.email,
+      //   name:res.data.name,
+      //   bought:[]
+      // }
+      // this.setState({ user });
+      // localStorage.setItem("user", JSON.stringify(user));
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   render() {
     return (
@@ -214,14 +242,15 @@ export default class App extends Component {
               ) : (null)}
             </nav>
             <Switch>
-              <Route exact path="/" component={ProductList} />
-              <Route exact path="/login" component={Login} />
+              <Route exact path="/" component={ProductList} title="Products" />
+              <Route exact path="/login" component={Login} title="Login"/>
               <Route exact path="/cart" component={Cart} />
               <Route exact path="/add-product" component={AddProduct} />
               <Route exact path="/products" component={ProductList} />
               <Route exact path="/specification" component={Specification} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/products-bought" component={ProductsBought} />
+              <Route exact path="/checking-out" component={CheckingOut} />
             </Switch>
           </div>
         </Router>
