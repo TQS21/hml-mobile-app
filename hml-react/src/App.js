@@ -120,6 +120,7 @@ export default class App extends Component {
 
   checkout = () => {
     if (!this.state.user) {
+      let status = "pending"
       this.routerRef.current.history.push("/login");
       return;
     }
