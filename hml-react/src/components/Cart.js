@@ -1,10 +1,14 @@
 import React from "react";
 import withContext from "../withContext";
 import CartItem from "./CartItem";
+import { useHistory } from 'react-router-dom';
 
 const Cart = props => {
   const { cart } = props.context;
   const cartKeys = Object.keys(cart || {});
+  const history = useHistory();
+
+
   return (
     <>
       <div className="hero is-primary">
@@ -32,13 +36,14 @@ const Cart = props => {
                   className="button is-warning "
                 >
                   Clear cart
-                </button>{" "}
+                </button>            
                 <button
                   className="button is-success"
                   onClick={props.context.checkout}
                 >
                   Checkout
                 </button>
+
               </div>
             </div>
           </div>
