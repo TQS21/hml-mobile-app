@@ -1,0 +1,6 @@
+services:
+  frontend:
+    build: ./hml-react
+    ports:
+      - 4001:80
+    restart: on-failure

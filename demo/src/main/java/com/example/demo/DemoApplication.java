@@ -1,9 +1,5 @@
-package tqs.lab4_1;
+package com.example.demo;
 
-/**
- * Hello world!
- *
- */
 public class DemoApplication 
 {
     public static void main( String[] args )

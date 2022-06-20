@@ -6,76 +6,58 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.And;
 
-import java.util.regex.Pattern;
-import java.util.concurrent.TimeUnit;
+import java.net.MalformedURLException;
 // import org.junit.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // import static org.junit.Assert.*;
 // import static org.hamcrest.CoreMatchers.*;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.chrome.ChromeDriver;
 
 import io.github.bonigarcia.seljup.SeleniumJupiter;
 
 @ExtendWith(SeleniumJupiter.class)
 public class LoginSteps {
 
-  private WebDriver driver;
-	private String baseUrl= "http://localhost:3000/";
+    private DriverFactory factory = new DriverFactory();
 
-/* 	@BeforeEach
-	public void setUp() throws Exception {
-    System.setProperty("webdriver.gecko.driver", "/usr/local/bin/geckodriver");
-
-    driver = new FirefoxDriver();
-    baseUrl = "http://localhost:3000";
-    driver.manage().timeouts();//.implicitlyWait(30, TimeUnit.SECONDS);
-	} */
+    private String baseUrl = "http://localhost:4001";
 
     @Given("I am on the Home page")
-    public void start_on_page() {
-        System.setProperty("webdriver.gecko.driver", "/usr/local/bin/geckodriver");
-        driver = new FirefoxDriver();
-        driver.manage().timeouts();
-		    driver.get(baseUrl);
+    public void start_on_page() throws MalformedURLException {
+		    factory.getInstance().get(baseUrl);
     }
 
     @When("I click on the {string} in the navbar")
-    public void go_to_page(final String page) {
+    public void go_to_page(final String page) throws MalformedURLException {
 
-      driver.findElement(By.linkText(page)).click();
+      factory.getInstance().findElement(By.linkText(page)).click();
 
     }
 
     @When("I type {string} in the {string} bar")
-    public void when_cred(final String text,final String inputname) {
+    public void when_cred(final String text,final String inputname) throws MalformedURLException {
 
-      driver.findElement(By.name(inputname)).sendKeys(text);
+      factory.getInstance().findElement(By.name(inputname)).sendKeys(text);
 
     }
 
     
 
     @And("I type {string} in the {string} bar ")
-    public void and_cred_(final String text,final String inputname) {
+    public void and_cred_(final String text,final String inputname) throws MalformedURLException {
 
-      driver.findElement(By.name(inputname)).sendKeys(text);
+      factory.getInstance().findElement(By.name(inputname)).sendKeys(text);
 
     }
 
     @And("I type {string} in the repeat password bar")
-    public void rep_pass_cred(final String text) {
+    public void rep_pass_cred(final String text) throws MalformedURLException {
 
-      driver.findElement(By.name("repPass")).sendKeys(text);
+      factory.getInstance().findElement(By.name("repPass")).sendKeys(text);
 
     }
 
@@ -101,40 +83,40 @@ public class LoginSteps {
     // }
 
     @And("I click on the submit button")
-    public void sub_button() {
+    public void sub_button() throws MalformedURLException {
 
-      driver.findElement(By.className("button")).click();
+      factory.getInstance().findElement(By.className("button")).click();
 
     }
 
     @Then("I expect to be on the {string} page")
-    public void assert_page_url_end(final String route) {
+    public void assert_page_url_end(final String route) throws MalformedURLException {
 
-		  assertEquals(baseUrl+route, driver.getCurrentUrl());
+		  assertEquals(baseUrl+route, factory.getInstance().getCurrentUrl());
 
 
     }
 
     @Then("I expect to be on the page {string}")
-    public void assert_page_url_end_quit(final String route) {
+    public void assert_page_url_end_quit(final String route) throws MalformedURLException {
 
-		  assertEquals(baseUrl+route, driver.getCurrentUrl());
-      driver.quit();
+		  assertEquals(baseUrl+route, factory.getInstance().getCurrentUrl());
+      factory.getInstance().quit();
 
 
     }
 
     @And("there should be a {string} in the upper right of the screen")
-    public void check_login_quit(final String name) {
+    public void check_login_quit(final String name) throws MalformedURLException {
 
-      assertEquals(name, driver.findElement(By.xpath("//div[@id='root']/div/nav/div[3]")).getText());
-      driver.quit();
+      assertEquals(name, factory.getInstance().findElement(By.xpath("//div[@id='root']/div/nav/div[3]")).getText());
+      factory.getInstance().quit();
     }
 
     @And("there should be {string} in the upper right of the screen")
-    public void check_login(final String name) {
+    public void check_login(final String name) throws MalformedURLException {
 
-      assertEquals(name, driver.findElement(By.xpath("//div[@id='root']/div/nav/div[3]")).getText());
+      assertEquals(name, factory.getInstance().findElement(By.xpath("//div[@id='root']/div/nav/div[3]")).getText());
     }
 
 
@@ -142,56 +124,56 @@ public class LoginSteps {
 
 
     @And("I click on the see Details of the first product")
-    public void product_details() {
+    public void product_details() throws MalformedURLException {
 
-      driver.findElement(By.xpath("//div[@id='root']/div/div[2]/div[2]/div/div/div/div[2]/div[2]/a/button")).click();
+      factory.getInstance().findElement(By.xpath("//div[@id='root']/div/div[2]/div[2]/div/div/div/div[2]/div[2]/a/button")).click();
     }
 
 
     @Then("the title of the book should be {string}")
-    public void assert_book_title(final String name) {
+    public void assert_book_title(final String name) throws MalformedURLException {
 
-		  assertEquals(name, driver.findElement(By.xpath("//div[@id='root']/div/main/div[2]/div/h1")).getText());
-      driver.quit();
+		  assertEquals(name, factory.getInstance().findElement(By.xpath("//div[@id='root']/div/main/div[2]/div/h1")).getText());
+      factory.getInstance().quit();
 
 
     }
 
 
     @When("I click on the Add to Cart on the first product")
-    public void click_add_cart() {
+    public void click_add_cart() throws MalformedURLException {
 
-      driver.findElement(By.xpath("//div[@id='root']/div/div[2]/div[2]/div/div/div/div[2]/div[2]/button")).click();
+      factory.getInstance().findElement(By.xpath("//div[@id='root']/div/div[2]/div[2]/div/div/div/div[2]/div[2]/button")).click();
 
     }
 
     @Then("my cart should have {int} item")
-    public void assert_num_cart(final int n_item) {
+    public void assert_num_cart(final int n_item) throws MalformedURLException {
 
-		  assertEquals(""+n_item, driver.findElement(By.xpath("//div[@id='root']/div/nav/div[2]/a[2]/span")).getText());
+		  assertEquals(""+n_item, factory.getInstance().findElement(By.xpath("//div[@id='root']/div/nav/div[2]/a[2]/span")).getText());
 
 
     }
 
     @Then("i should have {int} item in my cart")
-    public void assert_num_cart_quit(final int n_item) {
+    public void assert_num_cart_quit(final int n_item) throws MalformedURLException {
 
-		  assertEquals(""+n_item, driver.findElement(By.xpath("//div[@id='root']/div/nav/div[2]/a[2]/span")).getText());
-      driver.quit();
+		  assertEquals(""+n_item, factory.getInstance().findElement(By.xpath("//div[@id='root']/div/nav/div[2]/a[2]/span")).getText());
+      factory.getInstance().quit();
 
 
     }
 
     @And("I click in the checkout button to order it")
-    public void click_checkout() {
+    public void click_checkout() throws MalformedURLException {
 
-      driver.findElement(By.xpath("//div[@id='root']/div/div[2]/div/div[2]/div/button[2]")).click();
+      factory.getInstance().findElement(By.xpath("//div[@id='root']/div/div[2]/div/div[2]/div/button[2]")).click();
     }
 
     @When("I click on the Cart in the navbar")
-    public void go_to_cart() {
+    public void go_to_cart() throws MalformedURLException {
 
-      driver.findElement(By.xpath("//div[@id='root']/div/nav/div[2]/a[2]")).click();
+      factory.getInstance().findElement(By.xpath("//div[@id='root']/div/nav/div[2]/a[2]")).click();
 
     }
 
