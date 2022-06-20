@@ -29,6 +29,7 @@ public class LoginSteps {
     @Given("I am on the Home page")
     public void start_on_page() throws MalformedURLException {
 		    factory.getInstance().get(baseUrl);
+        System.out.println(factory.getInstance().getTitle());
     }
 
     @When("I click on the {string} in the navbar")
