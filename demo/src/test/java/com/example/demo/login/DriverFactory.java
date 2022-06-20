@@ -14,6 +14,7 @@ public class DriverFactory {
 
     public WebDriver getInstance() throws MalformedURLException {
         if (this.webDriver == null) {
+            System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
