@@ -24,5 +24,7 @@ jobs:
         cache: maven
     - name: Deploy Testing Environment
       run: docker-compose -f docker-compose.test.yml up -d --build
-    - name: Run Cucumber Tests And Sutdown Environment
-      run: cd demo && mvn test && cd ../ && docker-compose -f docker-compose.test.yml down -v
+    - name: Run Cucumber Tests
+      run: cd demo && mvn test && cd ../
+    - name: Shutdown Testing Environment
+      run : docker-compose -f docker-compose.test.yml down -v
