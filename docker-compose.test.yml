@@ -4,3 +4,8 @@ services:
     ports:
       - 4001:80
     restart: on-failure
+
+networks:
+  default:
+    name: dev
+    external: true
