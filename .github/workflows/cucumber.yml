@@ -31,3 +31,4 @@ jobs:
       run : |
         docker-compose -f docker-compose.test.yml down -v 
         ps -A | grep chrome | awk '{print $1}' | xargs kill -9 $1
+        docker ps | grep test_frontend | awk '{print$1}' | xargs docker stop $1
