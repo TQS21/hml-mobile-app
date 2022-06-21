@@ -16,7 +16,7 @@ const ProductsBought = props => {
   const fetchData = async () => {
     console.log(user)
     const res = await axios.get(
-      'http://localhost:9092/hml/api/history',
+      'http://deti-tqs-05:9092/hml/api/history',
       { user }
     ).catch((res) => {
       return { status: 401, message: 'Unauthorized' }

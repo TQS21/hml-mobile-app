@@ -30,7 +30,7 @@ export default class App extends Component {
     let user = localStorage.getItem("user");
     let cart = localStorage.getItem("cart");
 
-    const products = await axios.get('http://localhost:9092/hml/api/allBooks');
+    const products = await axios.get('http://deti-tqs-05:9092/hml/api/allBooks');
     user = user ? JSON.parse(user) : null;
     cart = cart? JSON.parse(cart) : {};
 
@@ -39,7 +39,7 @@ export default class App extends Component {
 
   login = async (email, password) => {
     const res = await axios.post(
-      'http://localhost:9092/hml/api/login',
+      'http://deti-tqs-05:9092/hml/api/login',
       { email, password },
     ).catch((res) => {
       return { status: 401, message: 'Unauthorized' }
@@ -61,7 +61,7 @@ export default class App extends Component {
 
   register = async (name, email, password, phone) => {
     const res = await axios.post(
-      'http://localhost:9092/hml/api/register',
+      'http://deti-tqs-05:9092/hml/api/register',
       { name, email, password, phone },
     ).catch((res) => {
       console.log(res)
@@ -148,7 +148,7 @@ export default class App extends Component {
       address: address
     }
     const res = await axios.post(
-      'http://localhost:9092/hml/api/delivery',
+      'http://deti-tqs-05:9092/hml/api/delivery',
       { userDTO, address },
     ).catch((res) => {
       return { status: 401, message: 'Unauthorized' }
@@ -184,7 +184,7 @@ export default class App extends Component {
             aria-label="main navigation"
           >
             <div className="navbar-brand">
-              <b className="navbar-item is-size-4 ">BookDelivery</b>
+              <b className="navbar-item is-size-4 ">HML - Book Delivery</b>
               <label
                 role="button"
                 className="navbar-burger burger"
