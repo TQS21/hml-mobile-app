@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build: ./hml-react
+    ports:
+      - 4000:80
+    restart: on-failure
+
+networks:
+  default:
+    name: dev
+    external: true
