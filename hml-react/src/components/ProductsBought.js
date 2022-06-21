@@ -16,7 +16,7 @@ const ProductsBought = props => {
   const fetchData = async () => {
     console.log(user)
     const res = await axios.get(
-      'http://localhost:9092/hml/api/history',
+      'http://localhost:9092/hml/api/allBooks',
       { user }
     ).catch((res) => {
       return { status: 401, message: 'Unauthorized' }
@@ -56,7 +56,7 @@ const ProductsBought = props => {
                     <div className="media-content">
                     <b style={{ textTransform: "capitalize" }}>
                         {product.title}{" "}
-                        <span className="tag is-primary">To be delivered!</span>
+                        <span className="tag is-primary" color="yellow">To be delivered!</span>
                     </b>
                       <div>{product.author}</div>
                       <div className="is-clearfix">
