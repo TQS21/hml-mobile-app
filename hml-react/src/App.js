@@ -30,7 +30,7 @@ export default class App extends Component {
     let user = localStorage.getItem("user");
     let cart = localStorage.getItem("cart");
 
-    const products = await axios.get('http://localhost:8081/hml/api/allBooks');
+    const products = await axios.get('http://localhost:9092/hml/api/allBooks');
     user = user ? JSON.parse(user) : null;
     cart = cart? JSON.parse(cart) : {};
 
@@ -39,17 +39,17 @@ export default class App extends Component {
 
   login = async (email, password) => {
     const res = await axios.post(
-      'http://localhost:8081/hml/api/login',
+      'http://localhost:9092/hml/api/login',
       { email, password },
     ).catch((res) => {
       return { status: 401, message: 'Unauthorized' }
     })
-    console.log(res)
     if(res.status === 200) {
       const user = {
         email:res.data.email,
         name:res.data.name,
-        bought:[]
+        phone: res.data.phone,
+        password: res.data.password
       }
       this.setState({ user });
       localStorage.setItem("user", JSON.stringify(user));
@@ -59,10 +59,10 @@ export default class App extends Component {
     }
   }
 
-  register = async (name, email, password) => {
+  register = async (name, email, password, phone) => {
     const res = await axios.post(
-      'http://localhost:8081/hml/api/register',
-      { name, email, password },
+      'http://localhost:9092/hml/api/register',
+      { name, email, password, phone },
     ).catch((res) => {
       console.log(res)
       return { status: 401, message: 'Unauthorized' }
@@ -72,7 +72,7 @@ export default class App extends Component {
       const user = {
         email:res.data.email,
         name:res.data.name,
-        bought:[]
+        phone: res.data.phone
       }
       this.setState({ user });
       localStorage.setItem("user", JSON.stringify(user));
@@ -95,6 +95,8 @@ export default class App extends Component {
   };
 
   addToCart = cartItem => {
+    const uu = this.state.user
+    console.log(uu)
     let cart = this.state.cart;
     console.log(cartItem)
     if (cart[cartItem.id]) {
@@ -131,23 +133,27 @@ export default class App extends Component {
     }
   };
 
-  SendAddress = async (country, zipCode, address) => {
-    const uu = this.state.user
+  SendAddress = async (country, zipCode, region, add) => {
+
+    const userDTO = this.state.user
+    const address = {
+      country: country,
+      zip_code: zipCode,
+      region: region,
+      address: add
+    }
+    const orderDTO = {
+      userDTO: userDTO,
+      address: address
+    }
     const res = await axios.post(
-      'http://localhost:8081/??????',
-      { uu, country, zipCode, address },
+      'http://localhost:9092/hml/api/delivery',
+      { userDTO, address },
     ).catch((res) => {
       return { status: 401, message: 'Unauthorized' }
     })
-    console.log(res.status)
-    if(res.status === 202) {
-      // const user = {
-      //   email:res.data.email,
-      //   name:res.data.name,
-      //   bought:[]
-      // }
-      // this.setState({ user });
-      // localStorage.setItem("user", JSON.stringify(user));
+    if(res.status === 200) {
+      this.routerRef.current.history.push("/products-bought");
       return true;
     } else {
       return false;
@@ -165,7 +171,8 @@ export default class App extends Component {
           addProduct: this.addProduct,
           clearCart: this.clearCart,
           checkout: this.checkout,
-          register: this.register
+          register: this.register,
+          SendAddress: this.SendAddress
         }}
       >
         <Router ref={this.routerRef}>
@@ -176,7 +183,7 @@ export default class App extends Component {
             aria-label="main navigation"
           >
             <div className="navbar-brand">
-              <b className="navbar-item is-size-4 ">ecommerce</b>
+              <b className="navbar-item is-size-4 ">BookDelivery</b>
               <label
                 role="button"
                 className="navbar-burger burger"

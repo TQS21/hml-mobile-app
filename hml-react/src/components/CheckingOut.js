@@ -8,6 +8,7 @@ class CheckingOut extends Component {
     this.state = {
       country: "",
       zipCode: "",
+      region:"",
       address: ""
     };
   }
@@ -16,16 +17,16 @@ class CheckingOut extends Component {
 
   dataAccept = (e) => {
     e.preventDefault();
-    const { country, zipCode, address } = this.state;
-    if (!country || !zipCode || !address) {
+    const { country, zipCode, region, address } = this.state;
+    if (!country || !zipCode || !region ||!address) {
       return this.setState({ error: "Fill all fields!" });
     }
-    // this.props.context.SendAddress(country, zipCode, address)
-    //   .then((sent) => {
-    //     if (!sent) {
-    //       this.setState({ error: "Invalid Address" });
-    //     }
-    //   })
+    this.props.context.SendAddress(country, zipCode, region, address)
+      .then((sent) => {
+        if (!sent) {
+          this.setState({ error: "Invalid Address" });
+        }
+      })
   };
 
   render() {
@@ -54,6 +55,14 @@ class CheckingOut extends Component {
                 <input
                   className="input"
                   name="zipCode"
+                  onChange={this.handleChange}
+                />
+              </div>
+              <div className="field">
+                <label className="label">Region: </label>
+                <input
+                  className="input"
+                  name="region"
                   onChange={this.handleChange}
                 />
               </div>

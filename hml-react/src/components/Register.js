@@ -9,6 +9,7 @@ class Register extends Component {
       username: "",
       password: "",
       repPass:"",
+      phone:0,
     };
   }
   handleChange = e => this.setState({ [e.target.name]: e.target.value, error: "" });
@@ -16,14 +17,15 @@ class Register extends Component {
   register = (e) => {
     e.preventDefault();
 
-    const { username, email, password,repPass } = this.state;
-    if (!username || !password || !repPass || !email) {
+    const { username, email, password,repPass, phone } = this.state;
+    if (!username || !password || !repPass || !email || !phone) {
       return this.setState({ error: "Fill all fields!" });
     }
     if(repPass!==password){
       return this.setState({ error: "Passwords do not match!" });
     }
-    this.props.context.register(username, email, password)
+    
+    this.props.context.register(username, email, password, parseInt(phone))
       .then((loggedIn) => {
         if (!loggedIn) {
           this.setState({ error: "Invalid Credentails!" });
@@ -61,6 +63,15 @@ class Register extends Component {
                   className="input"
                   type="email"
                   name="email"
+                  onChange={this.handleChange}
+                />
+              </div>
+              <div className="field">
+                <label className="label">Phone Number: </label>
+                <input
+                  className="input"
+                  type="number"
+                  name="phone"
                   onChange={this.handleChange}
                 />
               </div>

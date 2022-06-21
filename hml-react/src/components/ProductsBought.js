@@ -1,12 +1,35 @@
-import React from "react";
+import React,{useState, useEffect} from "react";
 import withContext from "../withContext";
 import {Link} from "react-router-dom";
+import axios from 'axios';
 
 
 const ProductsBought = props => {
-  const { products } = props.context;
+  const {user} = props.context
+  const [data, setData] = useState([])
 
 
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  const fetchData = async () => {
+    console.log(user)
+    const res = await axios.get(
+      'http://localhost:9092/hml/api/history',
+      { user }
+    ).catch((res) => {
+      return { status: 401, message: 'Unauthorized' }
+    })
+    console.log(res)
+    if(res.status === 200) {
+      setData(res.data)
+      console.log(data)
+      return true;
+    } else {
+      return false;
+    }
+  }
   return (
     <>
       <div className="hero is-primary">
@@ -17,8 +40,8 @@ const ProductsBought = props => {
       <br />
       <div className="container">
         <div className="column columns is-multiline">
-        {
-            products.map((product, index) => (
+        {data ? (
+            data.map((product, index) => (
                 <div className=" column is-half" style={{marginTop:30}}>
                 <div className="box">
                   <div className="media">
@@ -50,7 +73,13 @@ const ProductsBought = props => {
                 </div>
               </div>
             ))
-        }
+        ): (
+          <div className="column">
+          <span className="title has-text-grey-light">
+            No products found!
+          </span>
+        </div>
+        )}
         </div>
       </div>
     </>
