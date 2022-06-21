@@ -25,5 +25,5 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       - name: Deploy to Production Environment
-        run: sh deploy.sh -d
+        run: sh deploy.sh -p
 
