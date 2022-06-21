@@ -25,7 +25,7 @@ jobs:
     - name: Deploy Testing Environment
       run: sh deploy.sh -t
     - name: Run Cucumber Tests
+      continue-on-error: true
       run: cd demo && mvn test && cd ../
     - name: Shutdown Testing Environment
-      if: always()
       run : docker-compose -f docker-compose.test.yml down -v
